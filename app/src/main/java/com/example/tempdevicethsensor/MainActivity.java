@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
     Button button;
     EditText editText;
+    TextView socket, device;
     BluetoothSocket bluetoothSocket;
     OutputStream outputStream;
 
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         BluetoothDevice mdevice = madapter.getRemoteDevice(((BluetoothDevice)
                 madapter.getBondedDevices().toArray()[0]).getAddress());
 
-        bluetoothSocket = mdevice.createRfcommSocketToServiceRecord(UUID.randomUUID());
+        bluetoothSocket = mdevice.createRfcommSocketToServiceRecord(UUID.fromString("fa916458-bbce-42f5-a016-f6e5e95a62eb"));
         BluetoothService bluetoothService = new BluetoothService();
         bluetoothService.execute();
 
@@ -39,6 +41,15 @@ public class MainActivity extends AppCompatActivity {
 
         button = findViewById(R.id.button);
         editText = findViewById(R.id.editText);
+        socket = findViewById(R.id.socket);
+        device = findViewById(R.id.device);
+
+        String socketConnect = bluetoothSocket.isConnected()? "on": "off";
+        BluetoothDevice bluetoothDevice = bluetoothSocket.getRemoteDevice();
+        String deviceName = (bluetoothDevice == null? "null": bluetoothDevice.getName());
+
+        socket.setText(socket.getText().toString() + " " + socketConnect);
+        device.setText(device.getText().toString() + deviceName);
 
         button.setOnClickListener(view -> {
             try {
